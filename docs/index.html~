@@ -1,0 +1,17 @@
+<!doctype html>
+    <head>
+        <meta charset="utf-8">
+        <!--
+        <meta http-equiv="refresh" content="2; url = https://jianhaizhang.github.io/spatialHeatmap_supplement
+/cocluster_optimize.html"/>
+        -->
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+      <a href='use_case.html'>Use case of spaitalHeatmap</a> <br>
+      <a href='cocluster_optimize.html'>Optimizing the automatic method for co-visualization in spatialHeatmap</a>
+    </body>
+</html>
+
