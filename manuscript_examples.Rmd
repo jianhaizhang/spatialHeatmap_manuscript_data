@@ -255,6 +255,30 @@ up.brain <- subset(rowData(en.brain), type=='up' & total==4)
 up.brain['Grik3', 1:3]
 ```
 
+```{r eval=FALSE, echo=FALSE, collapse=TRUE}
+w <- which(rownames(enr.res$result$brain$up) %in% 'Grik3'); w
+
+# Select 5 eniched genes for demonstration.
+dat <- en.brain[c(1:4, 1509), grepl('C57BL.6', colnames(en.brain))]
+# Line graph.
+graph_line(assay(dat), line.width=2, lgd.pos='bottom') + theme(panel.grid.minor.y = element_line(color = '#B3B3B3', size = 0.75, linetype = 1))
+
+# Heatmap
+library(reshape2)
+asy <- as.data.frame(assay(dat))
+asy$gene <- rownames(asy)
+asy.melt <-  melt(asy, id = c('gene'))
+ggplot(asy.melt, aes(gene, variable, fill= value)) + geom_tile() + scale_fill_gradient(low = "yellow", high = "red") + theme(text = element_text(size=20))
+
+# Heatmap with dendrograms
+library(gplots); library(dendextend)
+asy <- t(assay(dat))
+dd <- set(as.dendrogram(hclust(dist(asy))), "branches_lwd", 3)
+
+mycolors <- colorRampPalette(c("yellow", "orange", "red"))
+heatmap.2(asy, trace = "none", col = mycolors, dendrogram="both", srtRow=60, srtCol=10,  density.info='none', Rowv = dd, Colv = dd)
+```
+
 After subsetting the assay matrix to the 15\% most similar members from a correlation-based search (including 'Grik3'), hierarchical clustering is performed. The clustering results are presented in the form of a matrix heatmap (Figure \@ref(fig:mhm)). In Figure \@ref(fig:mhm), the rows and columns are sorted by the dendrograms obtained from the hierarchical clustering step, and the query gene is indicated by a black line.   
 
 ```{r eval=TRUE, echo=TRUE, collapse=TRUE}
@@ -596,11 +620,11 @@ Include essential information in the `colData` of the cell-type data, such as th
 sc.de.nor$bulk <- 'pancreas.islet'
 sc.de.nor$cell.type <- colnames(sc.de.nor)
 sc.de.nor$prop <- round(prop['Sub1', sc.de.nor$cell.type], 3)
+# Reduce dimensionalities.
+sc.de.dim <- runTSNE(sc.de.nor)
 # Assign unique shapes to each cell type.
 cell.all <- unique(sc.de.dim$cell.type)
 sp <- setNames(c(15, 17:19, 12, 8), cell.all)
-# Reduce dimensionalities.
-sc.de.dim <- runTSNE(sc.de.nor)
 ```
 
 Import the aSVG of human pancreatic islets.    
